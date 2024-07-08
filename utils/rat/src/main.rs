@@ -10,8 +10,10 @@
 //
 // You should have received a copy of the GNU Affero General Public License along with no_utils. If not, see <https://www.gnu.org/licenses/>.
 
+use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::path::Path;
-use std::{env, fs};
 
 fn main() {
     let args = env::args_os().skip(1); // Skip execution path
@@ -30,8 +32,10 @@ fn main() {
 }
 
 fn print_file(path: &Path) {
-    match fs::read_to_string(path) {
-        Ok(contents) => println!("{}", contents),
-        Err(error) => print!("{}", error),
+    let file = File::open(path).expect("To be able to read the file.");
+    let reader = BufReader::new(file);
+
+    for line in reader.lines() {
+        println!("{}", line.unwrap());
     }
 }
