@@ -14,7 +14,7 @@ use std::path::Path;
 use std::{env, fs};
 
 fn main() {
-    let args = env::args().skip(1); // Skip execution path
+    let args = env::args_os().skip(1); // Skip execution path
 
     for arg in args {
         let path: &Path = Path::new(&arg);
