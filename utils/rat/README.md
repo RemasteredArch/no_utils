@@ -1,8 +1,17 @@
 # rat
 
-Like cat(1), but worse.
+Like cat(1), but worse? 10% faster, but none of the additional features.
 
 Real alternative: [bat](https://github.com/sharkdp/bat).
+
+## Usage
+
+```
+$ rat [options] [--] {path [path ...]}
+```
+
+Options:
+- `-h`/`--help`: Displays a help messsage.
 
 ## License
 
