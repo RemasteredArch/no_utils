@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU Affero General Public License along with no_utils. If not, see <https://www.gnu.org/licenses/>.
 
 use std::fs::File;
-use std::io::{BufReader, Read, Write};
+use std::io::{Read, Seek, Write};
 use std::path::Path;
 use std::{env, io};
 
@@ -35,16 +35,29 @@ fn main() -> io::Result<()> {
 
 fn print_file(path: &Path) -> io::Result<()> {
     const BUFFER_SIZE: usize = u16::MAX as usize;
-
-    let file = File::open(path).expect("To be able to read the file.");
-    let mut reader = BufReader::with_capacity(BUFFER_SIZE, file);
     let mut stdout = std::io::stdout().lock();
 
+    let mut file = File::open(path).expect("To be able to read the file.");
     let mut buffer: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE];
 
-    while reader.read_exact(&mut buffer).is_ok() {
+    let file_length = file.metadata()?.len();
+    let mut cursor: u64 = 0;
+
+    while cursor <= file_length {
+        if file.read_exact(&mut buffer).is_err() {
+            break;
+        }
         stdout.write_all(&buffer)?;
+        cursor = file.stream_position()?;
     }
+
+    // Brings the seek head/cursor position back to before the last buffer was read
+    let start_of_last_buffer: i64 = (cursor as i128 - file_length as i128) as i64;
+    file.seek(io::SeekFrom::End(start_of_last_buffer))?;
+
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)?;
+    stdout.write_all(&buffer)?;
 
     Ok(())
 }
