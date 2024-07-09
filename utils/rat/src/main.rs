@@ -39,8 +39,8 @@ fn main() -> io::Result<()> {
 
         match exists {
             Ok(true) => print_file(path)?,
-            Ok(false) => println!("Error: {} does not exist!", path.to_string_lossy()),
-            Err(error) => println!("{}", error),
+            Ok(false) => eprintln!("Error: {} does not exist!", path.to_string_lossy()),
+            Err(error) => eprintln!("{}", error),
         }
     }
 
