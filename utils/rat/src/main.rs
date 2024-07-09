@@ -4,11 +4,16 @@
 //
 // This file is part of rat. rat is a part of no_utils.
 //
-// no_utils is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// no_utils is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Affero General Public License as published by the Free Software Foundation, either version 3 of
+// the License, or (at your option) any later version.
 //
-// no_utils is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+// no_utils is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+// even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Affero General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License along with no_utils. If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Affero General Public License along with no_utils. If
+// not, see <https://www.gnu.org/licenses/>.
 
 use std::fs::File;
 use std::io::{Read, Seek, Write};
@@ -61,6 +66,7 @@ fn print_file(path: &Path) -> io::Result<()> {
         if file.read_exact(&mut buffer).is_err() {
             break;
         }
+
         stdout.write_all(&buffer)?;
         cursor = file.stream_position()?;
     }
@@ -82,8 +88,7 @@ fn help() {
     const AUTHORS: &str = env!("CARGO_PKG_AUTHORS");
     const LICENSE: &str = env!("CARGO_PKG_LICENSE");
     let help_message: String = format!(
-        "
-{NAME} v{VERSION}
+        "{NAME} v{VERSION}
 
 Licensed under the terms of the {LICENSE}.
 (C) {AUTHORS}.
