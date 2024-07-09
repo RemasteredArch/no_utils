@@ -35,7 +35,16 @@ fn print_file(path: &Path) {
     let file = File::open(path).expect("To be able to read the file.");
     let reader = BufReader::new(file);
 
+    let mut buffer = String::new();
+    let mut buffer_length: u8 = 0;
+
     for line in reader.lines() {
-        println!("{}", line.unwrap());
+        buffer.push_str(&line.unwrap());
+        buffer.push('\n');
+        buffer_length += 1;
+
+        if buffer_length == u8::MAX {
+            print!("{}", buffer);
+        }
     }
 }
