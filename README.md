@@ -6,7 +6,7 @@ Rust rewrites of various programs, usually coreutils. Not intended to have actua
 
 no_utils is just a container. All programs are in their own workspaces, under `utils/`.
 
-- [rat](./utils/rat/README.md): cat(1), but worse.
+- [rat](./utils/rat/): cat(1), but worse.
     - Real alternative: [bat](https://github.com/sharkdp/bat).
 
 ## License
