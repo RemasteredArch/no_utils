@@ -18,7 +18,21 @@ use std::{env, io};
 fn main() -> io::Result<()> {
     let args = env::args_os().skip(1); // Skip execution path
 
+    let mut no_parse_args = false;
+
     for arg in args {
+        if !no_parse_args && (arg == "-h" || arg == "--help") {
+            help();
+
+            return Ok(());
+        }
+
+        if !no_parse_args && arg == "--" {
+            no_parse_args = true;
+
+            continue;
+        }
+
         let path: &Path = Path::new(&arg);
 
         let exists: Result<bool, std::io::Error> = path.try_exists();
@@ -60,4 +74,25 @@ fn print_file(path: &Path) -> io::Result<()> {
     stdout.write_all(&buffer)?;
 
     Ok(())
+}
+
+fn help() {
+    const NAME: &str = env!("CARGO_PKG_NAME");
+    const VERSION: &str = env!("CARGO_PKG_VERSION");
+    const AUTHORS: &str = env!("CARGO_PKG_AUTHORS");
+    const LICENSE: &str = env!("CARGO_PKG_LICENSE");
+    let help_message: String = format!(
+        "
+{NAME} v{VERSION}
+
+Licensed under the terms of the {LICENSE}.
+(C) {AUTHORS}.
+
+Usage: ./{NAME} [options] [--] {{path [path ...]}}
+
+Options:
+  -h | --help     Prints this help message"
+    );
+
+    println!("{}", help_message);
 }
