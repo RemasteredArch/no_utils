@@ -11,7 +11,7 @@
 // You should have received a copy of the GNU Affero General Public License along with no_utils. If not, see <https://www.gnu.org/licenses/>.
 
 use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufReader, Read, Write};
 use std::path::Path;
 use std::{env, io};
 
@@ -34,21 +34,16 @@ fn main() -> io::Result<()> {
 }
 
 fn print_file(path: &Path) -> io::Result<()> {
+    const BUFFER_SIZE: usize = u16::MAX as usize;
+
     let file = File::open(path).expect("To be able to read the file.");
-    let reader = BufReader::new(file);
+    let mut reader = BufReader::with_capacity(BUFFER_SIZE, file);
     let mut stdout = std::io::stdout().lock();
 
-    let mut buffer = String::new();
-    let mut buffer_length: u8 = 0;
+    let mut buffer: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE];
 
-    for line in reader.lines() {
-        buffer.push_str(&line.unwrap());
-        buffer.push('\n');
-        buffer_length += 1;
-
-        if buffer_length == u8::MAX {
-            write!(&mut stdout, "{buffer}")?;
-        }
+    while reader.read_exact(&mut buffer).is_ok() {
+        stdout.write_all(&buffer)?;
     }
 
     Ok(())
