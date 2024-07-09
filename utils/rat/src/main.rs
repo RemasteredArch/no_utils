@@ -23,17 +23,17 @@ use std::{env, io};
 fn main() -> io::Result<()> {
     let args = env::args_os().skip(1); // Skip execution path
 
-    let mut no_parse_args = false;
+    let mut parse_args = true;
 
     for arg in args {
-        if !no_parse_args && (arg == "-h" || arg == "--help") {
+        if parse_args && (arg == "-h" || arg == "--help") {
             help();
 
             return Ok(());
         }
 
-        if !no_parse_args && arg == "--" {
-            no_parse_args = true;
+        if parse_args && arg == "--" {
+            parse_args = false;
 
             continue;
         }
