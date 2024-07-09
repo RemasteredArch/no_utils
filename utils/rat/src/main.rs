@@ -10,12 +10,12 @@
 //
 // You should have received a copy of the GNU Affero General Public License along with no_utils. If not, see <https://www.gnu.org/licenses/>.
 
-use std::env;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
+use std::{env, io};
 
-fn main() {
+fn main() -> io::Result<()> {
     let args = env::args_os().skip(1); // Skip execution path
 
     for arg in args {
@@ -24,16 +24,19 @@ fn main() {
         let exists: Result<bool, std::io::Error> = path.try_exists();
 
         match exists {
-            Ok(true) => print_file(path),
+            Ok(true) => print_file(path)?,
             Ok(false) => println!("Error: {} does not exist!", path.to_string_lossy()),
             Err(error) => println!("{}", error),
         }
     }
+
+    Ok(())
 }
 
-fn print_file(path: &Path) {
+fn print_file(path: &Path) -> io::Result<()> {
     let file = File::open(path).expect("To be able to read the file.");
     let reader = BufReader::new(file);
+    let mut stdout = std::io::stdout().lock();
 
     let mut buffer = String::new();
     let mut buffer_length: u8 = 0;
@@ -44,7 +47,9 @@ fn print_file(path: &Path) {
         buffer_length += 1;
 
         if buffer_length == u8::MAX {
-            print!("{}", buffer);
+            write!(&mut stdout, "{buffer}")?;
         }
     }
+
+    Ok(())
 }
