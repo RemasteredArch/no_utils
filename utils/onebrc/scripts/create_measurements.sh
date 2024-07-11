@@ -67,7 +67,6 @@ fatal_error() {
 }
 
 opt() {
-  local 
   echo "$(text faint)$1$(text reset) | $(text faint)$2$(text reset)"
 }
 
