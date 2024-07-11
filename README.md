@@ -1,6 +1,6 @@
 # no_utils
 
-Rust rewrites of various programs, usually coreutils. Not intended to have actual utility.
+Rust rewrites of various programs, usually coreutils, and other small Rust programs.
 
 ## Utils
 
@@ -8,6 +8,7 @@ no_utils is just a container. All programs are in their own workspaces, under `u
 
 - [rat](./utils/rat/): cat(1), but worse.
     - Real alternative: [bat](https://github.com/sharkdp/bat).
+- [onebrc](./utils/onebrc/): a Rust implementation of Gunnar Morling's [One Billion Row Challenge](https://www.morling.dev/blog/one-billion-row-challenge/).
 
 ## License
 
