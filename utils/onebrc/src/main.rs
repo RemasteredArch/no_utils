@@ -59,10 +59,15 @@ fn print_file(path: &Path) -> io::Result<()> {
     let file = File::open(path).expect("To be able to read the file.");
     let reader = BufReader::new(file);
 
+    let mut stations: Vec<Station> = vec![];
+
     for line in reader.lines() {
         let station = parse_line(&line.unwrap());
-        dbg!(&station, station.get_average());
+
+        stations.push(station);
     }
+
+    dbg!(stations);
 
     Ok(())
 }
@@ -79,18 +84,18 @@ impl<'st> Measurement<'st> {
 }
 
 #[derive(Debug)]
-struct Station<'st> {
-    name: &'st str,
+struct Station {
+    name: String,
     total: i64,
     count: i32,
     min: i32,
     max: i32,
 }
 
-impl<'st> Station<'st> {
+impl Station {
     const fn new() -> Self {
         Self {
-            name: "",
+            name: String::new(),
             total: 0,
             count: 0,
             min: 0,
@@ -98,9 +103,9 @@ impl<'st> Station<'st> {
         }
     }
 
-    const fn new_from_entry(measurement: &'st Measurement) -> Self {
+    fn new_from_entry(measurement: Measurement) -> Self {
         Self {
-            name: measurement.name,
+            name: measurement.name.to_string(),
             total: measurement.value,
             count: 1,
             min: measurement.value as i32,
@@ -119,7 +124,7 @@ fn parse_line(line: &str) -> Station {
 
     let measurement = Measurement::new_from_data(name, temperature);
 
-    Station::new_from_entry(&measurement)
+    Station::new_from_entry(measurement)
 }
 
 fn help() {
