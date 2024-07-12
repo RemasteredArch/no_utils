@@ -67,6 +67,8 @@ fn print_file(path: &Path) -> io::Result<()> {
         add_to_stations(&mut stations, parse_line(&result));
     }
 
+    stations.sort_by_key(|s| s.name.clone());
+
     dbg!(stations);
 
     Ok(())
