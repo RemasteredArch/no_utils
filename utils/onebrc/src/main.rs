@@ -67,30 +67,30 @@ fn print_file(path: &Path) -> io::Result<()> {
     Ok(())
 }
 
-struct Measurement {
-    name: String,
+struct Measurement<'st> {
+    name: &'st str,
     value: i64,
 }
 
-impl Measurement {
-    const fn new_from_data(name: String, value: i64) -> Self {
+impl<'st> Measurement<'st> {
+    const fn new_from_data(name: &'st str, value: i64) -> Self {
         Self { name, value }
     }
 }
 
 #[derive(Debug)]
-struct Station {
-    name: String,
+struct Station<'st> {
+    name: &'st str,
     total: i64,
     count: i32,
     min: i32,
     max: i32,
 }
 
-impl Station {
+impl<'st> Station<'st> {
     const fn new() -> Self {
         Self {
-            name: String::new(),
+            name: "",
             total: 0,
             count: 0,
             min: 0,
@@ -98,7 +98,7 @@ impl Station {
         }
     }
 
-    const fn new_from_entry(measurement: Measurement) -> Self {
+    const fn new_from_entry(measurement: &'st Measurement) -> Self {
         Self {
             name: measurement.name,
             total: measurement.value,
@@ -108,8 +108,8 @@ impl Station {
         }
     }
 
-    fn get_average(&self) -> f64 {
-        (self.total / self.count as i64) as f64 / 10.0
+    fn get_average(&self) -> f32 {
+        (self.total / self.count as i64) as f32 / 10.0
     }
 }
 
@@ -117,7 +117,7 @@ fn parse_line(line: &str) -> Station {
     let (name, temperature_str) = line.split_once(';').unwrap();
     let temperature = temperature_str.replacen('.', "", 1).parse::<i64>().unwrap();
 
-    let measurement = Measurement::new_from_data(name.to_string(), temperature);
+    let measurement = Measurement::new_from_data(name, temperature);
 
     Station::new_from_entry(&measurement)
 }
