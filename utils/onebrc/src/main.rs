@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU Affero General Public License along with no_utils. If
 // not, see <https://www.gnu.org/licenses/>.
 
-#![warn(dead_code)]
+#![allow(dead_code)]
 
 use std::env;
 use std::fs::File;
