@@ -75,10 +75,20 @@ fn print_file(path: &Path) -> io::Result<()> {
 }
 
 fn print_stations(stations: &[Station]) {
-    print!("{{");
+    let mut stations = stations.iter();
+
+    let station = stations.next().unwrap();
+    print!(
+        "{{{}={}/{}/{}",
+        station.name,
+        station.get_min(),
+        station.get_average(),
+        station.get_max(),
+    );
+
     for station in stations {
         print!(
-            "{}={}/{}/{}, ",
+            ", {}={}/{}/{}",
             station.name,
             station.get_min(),
             station.get_average(),
