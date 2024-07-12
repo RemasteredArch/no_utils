@@ -62,14 +62,32 @@ fn print_file(path: &Path) -> io::Result<()> {
     let mut stations: Vec<Station> = vec![];
 
     for line in reader.lines() {
-        let station = parse_line(&line.unwrap());
+        let result = line.unwrap();
 
-        stations.push(station);
+        add_to_stations(&mut stations, parse_line(&result));
     }
 
     dbg!(stations);
 
     Ok(())
+}
+
+fn add_to_stations(stations: &mut Vec<Station>, measurement: Measurement) {
+    for station in stations.iter_mut() {
+        if station.name == measurement.name {
+            station.total += measurement.value;
+            station.count += 1;
+
+            station.min = std::cmp::min(station.min, measurement.value as i32);
+            station.max = std::cmp::max(station.max, measurement.value as i32);
+
+            return;
+        }
+    }
+
+    let station = Station::new_from_entry(measurement);
+
+    stations.push(station);
 }
 
 struct Measurement<'st> {
@@ -118,13 +136,11 @@ impl Station {
     }
 }
 
-fn parse_line(line: &str) -> Station {
+fn parse_line(line: &str) -> Measurement {
     let (name, temperature_str) = line.split_once(';').unwrap();
     let temperature = temperature_str.replacen('.', "", 1).parse::<i64>().unwrap();
 
-    let measurement = Measurement::new_from_data(name, temperature);
-
-    Station::new_from_entry(measurement)
+    Measurement::new_from_data(name, temperature)
 }
 
 fn help() {
