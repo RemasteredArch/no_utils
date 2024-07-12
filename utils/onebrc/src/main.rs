@@ -69,9 +69,24 @@ fn print_file(path: &Path) -> io::Result<()> {
 
     stations.sort_by_key(|s| s.name.clone());
 
-    dbg!(stations);
+    print_stations(&stations);
 
     Ok(())
+}
+
+fn print_stations(stations: &[Station]) {
+    print!("{{");
+    for station in stations {
+        print!(
+            "{}={}/{}/{}, ",
+            station.name,
+            station.get_min(),
+            station.get_average(),
+            station.get_max()
+        );
+    }
+
+    println!("}}");
 }
 
 fn add_to_stations(stations: &mut Vec<Station>, measurement: Measurement) {
@@ -133,8 +148,16 @@ impl Station {
         }
     }
 
+    fn get_min(&self) -> f32 {
+        self.min as f32 / 10.0
+    }
+
     fn get_average(&self) -> f32 {
         (self.total / self.count as i64) as f32 / 10.0
+    }
+
+    fn get_max(&self) -> f32 {
+        self.max as f32 / 10.0
     }
 }
 
