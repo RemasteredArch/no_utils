@@ -17,7 +17,7 @@
 
 #![allow(dead_code)]
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::env;
 use std::fs::File;
 use std::io;
@@ -60,7 +60,7 @@ fn print_file(path: &Path) -> io::Result<()> {
     let file = File::open(path).expect("To be able to read the file.");
     let reader = BufReader::new(file);
 
-    let mut stations = BTreeMap::<String, Station>::new();
+    let mut stations = HashMap::<String, Station>::new();
 
     for line in reader.lines() {
         let result = line.unwrap();
@@ -73,7 +73,8 @@ fn print_file(path: &Path) -> io::Result<()> {
     Ok(())
 }
 
-fn print_stations(stations: &BTreeMap<String, Station>) {
+fn print_stations(stations: &HashMap<String, Station>) {
+    let stations = BTreeMap::from_iter(stations.iter());
     let mut stations = stations.iter();
 
     let (name, station) = stations.next().unwrap();
@@ -98,7 +99,7 @@ fn print_stations(stations: &BTreeMap<String, Station>) {
     println!("}}");
 }
 
-fn add_to_stations(stations: &mut BTreeMap<String, Station>, measurement: Measurement) {
+fn add_to_stations(stations: &mut HashMap<String, Station>, measurement: Measurement) {
     if let Some(station) = stations.get_mut(measurement.name) {
         station.total += measurement.value;
         station.count += 1;
