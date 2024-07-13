@@ -19,7 +19,10 @@
 
 use anyhow::Result;
 use twilight_gateway::Event;
-use twilight_model::gateway::payload::incoming::{InteractionCreate, Ready};
+use twilight_model::{
+    application::interaction::{Interaction, InteractionType},
+    gateway::payload::incoming::{InteractionCreate, Ready},
+};
 
 use crate::bot::{Api, ApiRef};
 
@@ -44,5 +47,21 @@ pub async fn on_ready(api: ApiRef<'_>, event: Ready) -> Result<()> {
 // Interactions directly with the bot
 // Slash commands, buttons, etc. (not server events like messages)
 pub async fn on_interaction(api: ApiRef<'_>, event: InteractionCreate) -> Result<()> {
+    println!("Received interaction: {:?}", event.kind);
+
+    let result = match event.kind {
+        InteractionType::ApplicationCommand => on_command(api, &event).await,
+        _ => Ok(()), // Ignore other kinds of interactions
+    };
+
+    match result.as_ref() {
+        Err(error) => eprintln!("Error processing interaction: {error}"),
+        Ok(_) => println!("Interaction succeeded!"),
+    }
+
+    result
+}
+
+pub async fn on_command(api: ApiRef<'_>, event: &Interaction) -> Result<()> {
     Ok(())
 }
