@@ -9,6 +9,7 @@ no_utils is just a container. All programs are in their own workspaces, under `u
 - [rat](./utils/rat/): cat(1), but worse.
     - Real alternative: [bat](https://github.com/sharkdp/bat).
 - [onebrc](./utils/onebrc/): a Rust implementation of Gunnar Morling's [One Billion Row Challenge](https://www.morling.dev/blog/one-billion-row-challenge/).
+- [fortune_bot](./utils/fortune_bot/): a Discord bot to serve fortunes from [fortune(6)](https://en.wikipedia.org/wiki/Fortune_(Unix)).
 
 ## License
 

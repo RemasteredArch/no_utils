@@ -1,0 +1,20 @@
+[package]
+name = "fortune_bot"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1.0.86"
+async-trait = "0.1.81"
+dotenvy = "0.15.7"
+futures-util = { version = "0.3.30", default-features = false }
+rand = "0.8.5"
+tokio = { version = "1.38.0", features = ["full"] }
+twilight-cache-inmemory = "0.15.4"
+twilight-gateway = { version = "0.15.4", features = ["rustls-native-roots"] }
+twilight-http = "0.15.4"
+twilight-model = "0.15.4"
+twilight-util = { version = "0.15.4", features = ["builder", "link"] }
