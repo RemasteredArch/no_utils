@@ -8,11 +8,11 @@ Written as a coding challenge for me, not as a genuine submission, so rules shal
 
 ```sh
 $ ./scripts/create_measurements.sh billion # Or --help for more details
-$ cargo run -- measurements_1000000000.txt
+$ cargo run -- measurements_1000000000.txt # Or --help for more details
 ```
 *The generator requires OpenJDK 21.*
 
-As of release 0.1.0, this takes about 3 minutes to run on my system (Ubuntu 24.04 thru WSL on an i5-13600k, 980 Pro 1TB, and 2x8GB DDR5 4800MT CL40) because it is O(N^2) scaling. Better time complexity is up next!
+As of release 0.1.1, this takes about 90 +/- 0.5 seconds to run on my system (Ubuntu 24.04 thru WSL on an i5-13600k, 980 Pro 1TB, and 2x8GB DDR5 4800MT CL40). Off the top of my head, this is O(N * log(N)) time complexity.
 
 ## License
 
