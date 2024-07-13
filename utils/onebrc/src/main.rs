@@ -17,6 +17,7 @@
 
 #![allow(dead_code)]
 
+use std::collections::BTreeMap;
 use std::env;
 use std::fs::File;
 use std::io;
@@ -59,7 +60,7 @@ fn print_file(path: &Path) -> io::Result<()> {
     let file = File::open(path).expect("To be able to read the file.");
     let reader = BufReader::new(file);
 
-    let mut stations: Vec<Station> = vec![];
+    let mut stations = BTreeMap::<String, Station>::new();
 
     for line in reader.lines() {
         let result = line.unwrap();
@@ -67,29 +68,27 @@ fn print_file(path: &Path) -> io::Result<()> {
         add_to_stations(&mut stations, parse_line(&result));
     }
 
-    stations.sort_by_key(|s| s.name.clone());
-
     print_stations(&stations);
 
     Ok(())
 }
 
-fn print_stations(stations: &[Station]) {
+fn print_stations(stations: &BTreeMap<String, Station>) {
     let mut stations = stations.iter();
 
-    let station = stations.next().unwrap();
+    let (name, station) = stations.next().unwrap();
     print!(
         "{{{}={}/{}/{}",
-        station.name,
+        name,
         station.get_min(),
         station.get_average(),
         station.get_max(),
     );
 
-    for station in stations {
+    for (name, station) in stations {
         print!(
             ", {}={}/{}/{}",
-            station.name,
+            name,
             station.get_min(),
             station.get_average(),
             station.get_max()
@@ -99,22 +98,19 @@ fn print_stations(stations: &[Station]) {
     println!("}}");
 }
 
-fn add_to_stations(stations: &mut Vec<Station>, measurement: Measurement) {
-    for station in stations.iter_mut() {
-        if station.name == measurement.name {
-            station.total += measurement.value;
-            station.count += 1;
+fn add_to_stations(stations: &mut BTreeMap<String, Station>, measurement: Measurement) {
+    if let Some(station) = stations.get_mut(measurement.name) {
+        station.total += measurement.value;
+        station.count += 1;
 
-            station.min = std::cmp::min(station.min, measurement.value as i32);
-            station.max = std::cmp::max(station.max, measurement.value as i32);
-
-            return;
-        }
+        station.min = std::cmp::min(station.min, measurement.value as i32);
+        station.max = std::cmp::max(station.max, measurement.value as i32);
+    } else {
+        stations.insert(
+            measurement.name.to_string(),
+            Station::new_from_entry(measurement),
+        );
     }
-
-    let station = Station::new_from_entry(measurement);
-
-    stations.push(station);
 }
 
 struct Measurement<'st> {
@@ -130,7 +126,6 @@ impl<'st> Measurement<'st> {
 
 #[derive(Debug)]
 struct Station {
-    name: String,
     total: i64,
     count: i32,
     min: i32,
@@ -140,7 +135,6 @@ struct Station {
 impl Station {
     const fn new() -> Self {
         Self {
-            name: String::new(),
             total: 0,
             count: 0,
             min: 0,
@@ -150,7 +144,6 @@ impl Station {
 
     fn new_from_entry(measurement: Measurement) -> Self {
         Self {
-            name: measurement.name.to_string(),
             total: measurement.value,
             count: 1,
             min: measurement.value as i32,
