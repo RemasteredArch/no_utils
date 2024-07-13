@@ -29,6 +29,12 @@ use twilight_gateway::{
     Config, ConfigBuilder, Event, Intents, Shard,
 };
 use twilight_http::Client;
+use twilight_model::gateway::{
+    payload::outgoing::update_presence::UpdatePresencePayload,
+    presence::{ActivityType, MinimalActivity, Status},
+};
+
+use crate::event::on_event;
 
 const INTENTS: Intents = Intents::empty();
 
@@ -102,7 +108,34 @@ impl Bot {
     }
 
     fn new_config(token: String) -> Result<Config> {
-        Ok(ConfigBuilder::new(token, INTENTS).build())
+        let presence = Self::get_status()?;
+
+        Ok(ConfigBuilder::new(token, INTENTS)
+            .presence(presence)
+            .build())
+    }
+
+    fn get_status() -> Result<UpdatePresencePayload> {
+        let (activity_type, status_text, status) = if cfg!(debug_assertions) {
+            (
+                ActivityType::Listening,
+                "Pontificating about truths",
+                Status::Idle,
+            )
+        } else {
+            (ActivityType::Playing, "Spreading truths", Status::Online)
+        };
+
+        let activity = MinimalActivity {
+            kind: activity_type,
+            name: status_text.to_string(),
+            url: None,
+        };
+
+        // Status text and mode
+        let presence = UpdatePresencePayload::new(vec![activity.into()], false, None, status)?;
+
+        Ok(presence)
     }
 
     pub async fn run(mut self) -> Result<()> {
@@ -145,12 +178,8 @@ impl Bot {
 
         api.cache.update(&event);
 
-        tasks.spawn(handle_event_task(api.into_owned(), event));
+        tasks.spawn(on_event(api.into_owned(), event));
 
         Ok(())
     }
-}
-
-async fn handle_event_task(api: Api, event: Event) -> Result<()> {
-    Ok(())
 }

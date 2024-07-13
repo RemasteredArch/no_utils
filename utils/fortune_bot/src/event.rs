@@ -18,27 +18,31 @@
 #![allow(dead_code)]
 
 use anyhow::Result;
-use bot::Bot;
-use futures_util::{future::select, pin_mut};
+use twilight_gateway::Event;
+use twilight_model::gateway::payload::incoming::{InteractionCreate, Ready};
 
-mod bot;
-mod event;
+use crate::bot::{Api, ApiRef};
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    dotenvy::dotenv()?;
+// Handle all events
+pub async fn on_event(api: Api, event: Event) -> Result<()> {
+    if let Err(error) = match event {
+        Event::Ready(event) => on_ready(api.as_ref(), *event).await,
+        Event::InteractionCreate(event) => on_interaction(api.as_ref(), *event).await,
+        _ => Ok(()), // Ignore unknown event types
+    } {
+        eprintln!("Failed to handle event: {error}");
+    }
 
-    let bot = Bot::new().await?;
+    Ok(())
+}
 
-    let run = bot.run();
-    let interupt = tokio::signal::ctrl_c();
+// Once bot initializes
+pub async fn on_ready(api: ApiRef<'_>, event: Ready) -> Result<()> {
+    Ok(())
+}
 
-    // Freeze locations in memory and make mutable
-    pin_mut!(run);
-    pin_mut!(interupt);
-
-    // Wait for whichever one ends first
-    select(run, interupt).await;
-
+// Interactions directly with the bot
+// Slash commands, buttons, etc. (not server events like messages)
+pub async fn on_interaction(api: ApiRef<'_>, event: InteractionCreate) -> Result<()> {
     Ok(())
 }
