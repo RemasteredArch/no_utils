@@ -17,14 +17,16 @@
 
 #![allow(dead_code)]
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use twilight_gateway::Event;
 use twilight_model::{
-    application::interaction::{Interaction, InteractionType},
+    application::interaction::{Interaction, InteractionData, InteractionType},
     gateway::payload::incoming::{InteractionCreate, Ready},
 };
 
 use crate::bot::{Api, ApiRef};
+
+pub mod help;
 
 // Handle all events
 pub async fn on_event(api: Api, event: Event) -> Result<()> {
@@ -63,5 +65,15 @@ pub async fn on_interaction(api: ApiRef<'_>, event: InteractionCreate) -> Result
 }
 
 pub async fn on_command(api: ApiRef<'_>, event: &Interaction) -> Result<()> {
-    Ok(())
+    dbg!(&event.data);
+
+    // Pulls out event data as an application command
+    let Some(InteractionData::ApplicationCommand(command)) = event.data.as_ref() else {
+        bail!("missing command data");
+    };
+
+    match command.name.as_str() {
+        "help" => todo!(),
+        unknown => bail!("unknown command '{unknown}'"),
+    }
 }
