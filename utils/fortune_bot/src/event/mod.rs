@@ -17,11 +17,17 @@
 
 #![allow(dead_code)]
 
+use std::str::FromStr;
+
 use anyhow::{bail, Result};
 use twilight_gateway::Event;
 use twilight_model::{
-    application::interaction::{Interaction, InteractionData, InteractionType},
+    application::{
+        command::Command,
+        interaction::{Interaction, InteractionData, InteractionType},
+    },
     gateway::payload::incoming::{InteractionCreate, Ready},
+    id::{marker::GuildMarker, Id},
 };
 
 use crate::bot::{Api, ApiRef};
@@ -43,6 +49,31 @@ pub async fn on_event(api: Api, event: Event) -> Result<()> {
 
 // Once bot initializes
 pub async fn on_ready(api: ApiRef<'_>, event: Ready) -> Result<()> {
+    /// Get a list of commands for the bot
+    fn get_commands(guild_id: Option<Id<GuildMarker>>) -> Vec<Command> {
+        let mut commands = vec![];
+
+        // Register help
+        if let Some(command) = help::new(guild_id) {
+            commands.push(command);
+        }
+
+        commands
+    }
+
+    let client = api.client.interaction(event.application.id);
+    let guild_id = Id::<GuildMarker>::from_str(&std::env::var("GUILD_ID")?)?;
+
+    // Set commands for the devlopment server
+    client
+        .set_guild_commands(guild_id, &get_commands(Some(guild_id)))
+        .await?;
+
+    // Set commands for all servers when in release mode
+    if cfg!(not(debug_assertions)) {
+        client.set_global_commands(&get_commands(None)).await?;
+    }
+
     Ok(())
 }
 
@@ -67,13 +98,13 @@ pub async fn on_interaction(api: ApiRef<'_>, event: InteractionCreate) -> Result
 pub async fn on_command(api: ApiRef<'_>, event: &Interaction) -> Result<()> {
     dbg!(&event.data);
 
-    // Pulls out event data as an application command
+    // Confirms that this is a ApplicationCommand containing Command Data
     let Some(InteractionData::ApplicationCommand(command)) = event.data.as_ref() else {
         bail!("missing command data");
     };
 
     match command.name.as_str() {
-        "help" => todo!(),
+        "help" => help::call(api, event).await,
         unknown => bail!("unknown command '{unknown}'"),
     }
 }
