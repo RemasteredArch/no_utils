@@ -69,7 +69,7 @@ pub async fn call(api: ApiRef<'_>, interaction: &Interaction) -> Result<()> {
 /// Returns a random fortune.
 ///
 /// Uses a shell call to `fortune`.
-async fn fortune() -> Result<Box<str>, std::io::Error> {
+async fn fortune() -> Result<Box<str>> {
     Ok(shell_call("fortune").await?.join("\n").into_boxed_str())
 }
 
@@ -84,7 +84,7 @@ async fn fortune() -> Result<Box<str>, std::io::Error> {
 /// ```sh
 /// sh -c command
 /// ```
-async fn shell_call(command: &str) -> Result<Vec<Box<str>>, std::io::Error> {
+async fn shell_call(command: &str) -> Result<Vec<Box<str>>> {
     let output = if cfg!(target_os = "windows") {
         tokio::process::Command::new("cmd")
             .args(["/C", command])
