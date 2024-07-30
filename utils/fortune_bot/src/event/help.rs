@@ -52,7 +52,7 @@ Made with <3 by transgender spiders 🕸️🕷️."#;
 /// Defines the command schema
 pub fn new(guild_id: Option<Id<GuildMarker>>) -> Option<Command> {
     // In debug mode, only register commands in the provided server (or nowhere in none is provided)
-    if cfg!(debug_assertations) && guild_id.is_none() {
+    if cfg!(debug_assertions) && guild_id.is_none() {
         return None;
     }
 
