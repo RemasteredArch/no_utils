@@ -35,6 +35,7 @@ Wisdom of Unix past, brought straight to your server.
 ## Usage
 
 - `/help`
+- `/license`
 
 ### Future Options:
 
