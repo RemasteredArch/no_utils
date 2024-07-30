@@ -54,8 +54,13 @@ pub async fn on_ready(api: ApiRef<'_>, event: Ready) -> Result<()> {
     fn get_commands(guild_id: Option<Id<GuildMarker>>) -> Vec<Command> {
         let mut commands = vec![];
 
-        // Register help
+        // Register /help
         if let Some(command) = help::new(guild_id) {
+            commands.push(command);
+        }
+
+        // Register /fortune
+        if let Some(command) = fortune::new(guild_id) {
             commands.push(command);
         }
 
