@@ -32,6 +32,7 @@ use twilight_model::{
 
 use crate::bot::{Api, ApiRef};
 
+pub mod fortune;
 pub mod help;
 
 // Handle all events
@@ -105,6 +106,7 @@ pub async fn on_command(api: ApiRef<'_>, event: &Interaction) -> Result<()> {
 
     match command.name.as_str() {
         "help" => help::call(api, event).await,
+        "fortune" => fortune::call(api, event).await,
         unknown => bail!("unknown command '{unknown}'"),
     }
 }
