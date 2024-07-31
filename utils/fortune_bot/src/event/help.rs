@@ -35,11 +35,11 @@ Wisdom of Unix past, brought straight to your server.
 ## Usage
 
 - `/help`
-- `/license`
+- `/fortune`
 
 ### Future Options:
 
-- `/license [full]`
+- `/fortune [full]`
 
 ## License
 

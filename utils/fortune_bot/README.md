@@ -5,11 +5,11 @@ Wisdom of Unix past, brought straight to your server.
 ## Usage
 
 - `/help`
-- `/license`
+- `/fortune`
 
 ### Future Options:
 
-- `/license [full]`
+- `/fortune [full]`
 
 ## Setup
 
@@ -19,6 +19,10 @@ Requires a `.env` file in the project root (`utils/fortune_bot/.env`):
 TOKEN=YOUR_TOKEN # Discord bot token
 GUILD_ID=YOUR_TESTING_GUILD_ID # ID of the guild you will use to test the bot
 ```
+
+Also requires [`fortune`](<https://en.wikipedia.org/wiki/Fortune_(Unix)>) to be in PATH,
+such that it can be run with
+`cmd /C fortune` (Windows) or `sh -c fortune` (otherwise).
 
 ## License
 
