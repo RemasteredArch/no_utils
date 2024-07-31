@@ -85,30 +85,31 @@ async fn fortune() -> Result<Box<str>> {
 /// sh -c command
 /// ```
 async fn shell_call(command: impl AsRef<str>) -> Result<Box<[Box<str>]>> {
+    async fn make_call(
+        command: &str,
+        arguments: impl IntoIterator<Item = &str>,
+    ) -> std::io::Result<std::process::Output> {
+        tokio::process::Command::new(command)
+            .args(arguments)
+            .output()
+            .await
+    }
+
     let command = command.as_ref();
 
     let output = if cfg!(target_os = "windows") {
-        tokio::process::Command::new("cmd")
-            .args(["/C", command])
-            .output()
-            .await?
+        make_call("cmd", ["/C", command]).await?
     } else {
-        tokio::process::Command::new("sh")
-            .args(["-c", command])
-            .output()
-            .await?
+        make_call("sh", ["-c", command]).await?
     };
 
-    // Split into lines
-    // Is this broken by Windows' CRLF?
-    let output = output.stdout.split(|c| *c == b'\n');
+    // Parse into a string
+    let output = std::str::from_utf8(&output.stdout)?;
 
-    // Parse each line from bytes into strings
-    // What can I do about that unwrap?
-    let lines =
-        output.filter_map(|s| Some(std::str::from_utf8(s).ok()?.to_string().into_boxed_str()));
+    // Split into lines of `Box<str>`
+    let output = output.lines().map(Into::into);
 
-    Ok(lines.collect())
+    Ok(output.collect())
 }
 
 #[cfg(test)]
