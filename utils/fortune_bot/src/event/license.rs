@@ -30,28 +30,7 @@ use crate::bot::ApiRef;
 
 /// Self-documenting
 const MESSAGE: &str = r#"
-# fortune_bot:
-
-Wisdom of Unix past, brought straight to your server.
-
-## Usage
-
-- `/help`
-- `/fortune`
-- `/license`
-
-### Future Options:
-
-- `/license [full]`
-
-## License
-
-Licensed under the GNU Affero General Public License, either version 3 of the License, or (at your option) any later version.
-For a copy of the GNU Affero General Public License, see https://www.gnu.org/licenses/
-
-https://github.com/RemasteredArch/no_utils/tree/main/utils/fortune_bot/
-
-Made with <3 by transgender spiders 🕸️🕷️.
+fortune_bot is a part of no_utils. no_utils is licensed under the GNU Affero General Public License version 3, or (at your option) any later version. You should have received a copy of the GNU Affero General Public License along with no_utils, found in [`../../LICENSE`](https://github.com/RemasteredArch/no_utils/blob/main/LICENSE). If not, see https://www.gnu.org/licenses/.
 "#;
 
 /// Defines the command schema
@@ -62,8 +41,11 @@ pub fn new(guild_id: Option<Id<GuildMarker>>) -> Option<Command> {
     }
 
     // Build a new slash command
-    let mut builder =
-        CommandBuilder::new("help", "Displays a help message", CommandType::ChatInput);
+    let mut builder = CommandBuilder::new(
+        "license",
+        "Display the license of fortune_bot",
+        CommandType::ChatInput,
+    );
 
     // Assign it a particular guild ID if it exists (otherwise register globally)
     if let Some(guild_id) = guild_id {

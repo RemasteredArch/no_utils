@@ -6,6 +6,7 @@ Wisdom of Unix past, brought straight to your server.
 
 - `/help`
 - `/fortune`
+- `/license`
 
 ### Future Options:
 
@@ -26,4 +27,9 @@ such that it can be run with
 
 ## License
 
-rat is a part of no_utils. no_utils is licensed under the GNU Affero General Public License version 3, or (at your option) any later version. You should have received a copy of the GNU Affero General Public License along with no_utils, found in [../../LICENSE](../../LICENSE). If not, see \<[https://www.gnu.org/licenses/](https://www.gnu.org/licenses/)>.
+fortune_bot is a part of no_utils.
+no_utils is licensed under the GNU Affero General Public License version 3,
+or (at your option) any later version.
+You should have received a copy of the GNU Affero General Public License along with no_utils,
+found in [../../LICENSE](../../LICENSE).
+If not, see \<[https://www.gnu.org/licenses/](https://www.gnu.org/licenses/)>.

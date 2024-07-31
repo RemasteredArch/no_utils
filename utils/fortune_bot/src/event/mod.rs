@@ -34,6 +34,7 @@ use crate::bot::{Api, ApiRef};
 
 pub mod fortune;
 pub mod help;
+pub mod license;
 
 // Handle all events
 pub async fn on_event(api: Api, event: Event) -> Result<()> {
@@ -61,6 +62,11 @@ pub async fn on_ready(api: ApiRef<'_>, event: Ready) -> Result<()> {
 
         // Register /fortune
         if let Some(command) = fortune::new(guild_id) {
+            commands.push(command);
+        }
+
+        // Register /license
+        if let Some(command) = license::new(guild_id) {
             commands.push(command);
         }
 
@@ -112,6 +118,7 @@ pub async fn on_command(api: ApiRef<'_>, event: &Interaction) -> Result<()> {
     match command.name.as_str() {
         "help" => help::call(api, event).await,
         "fortune" => fortune::call(api, event).await,
+        "license" => license::call(api, event).await,
         unknown => bail!("unknown command '{unknown}'"),
     }
 }
