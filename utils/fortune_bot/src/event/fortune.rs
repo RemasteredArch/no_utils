@@ -84,7 +84,7 @@ async fn fortune() -> Result<Box<str>> {
 /// ```sh
 /// sh -c command
 /// ```
-async fn shell_call(command: impl AsRef<str>) -> Result<Vec<Box<str>>> {
+async fn shell_call(command: impl AsRef<str>) -> Result<Box<[Box<str>]>> {
     let command = command.as_ref();
 
     let output = if cfg!(target_os = "windows") {
@@ -105,7 +105,8 @@ async fn shell_call(command: impl AsRef<str>) -> Result<Vec<Box<str>>> {
 
     // Parse each line from bytes into strings
     // What can I do about that unwrap?
-    let lines = output.map(|s| std::str::from_utf8(s).unwrap().into());
+    let lines =
+        output.filter_map(|s| Some(std::str::from_utf8(s).ok()?.to_string().into_boxed_str()));
 
     Ok(lines.collect())
 }
