@@ -40,7 +40,7 @@ Wisdom of Unix past, brought straight to your server.
 - `/fortune`
 - `/license`
 
-### Future Options:
+### Future Options
 
 - `/license [full]`
 
