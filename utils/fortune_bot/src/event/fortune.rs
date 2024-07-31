@@ -84,7 +84,9 @@ async fn fortune() -> Result<Box<str>> {
 /// ```sh
 /// sh -c command
 /// ```
-async fn shell_call(command: &str) -> Result<Vec<Box<str>>> {
+async fn shell_call(command: impl AsRef<str>) -> Result<Vec<Box<str>>> {
+    let command = command.as_ref();
+
     let output = if cfg!(target_os = "windows") {
         tokio::process::Command::new("cmd")
             .args(["/C", command])
