@@ -85,6 +85,7 @@ async fn fortune() -> Result<Box<str>> {
 /// sh -c command
 /// ```
 async fn shell_call(command: impl AsRef<str>) -> Result<Box<[Box<str>]>> {
+    /// Run a command with args.
     async fn make_call(
         command: &str,
         arguments: impl IntoIterator<Item = &str>,
