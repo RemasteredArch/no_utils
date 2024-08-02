@@ -98,7 +98,7 @@ async fn shell_call(command: impl AsRef<str>) -> Result<Box<[Box<str>]>> {
 
     let command = command.as_ref();
 
-    let output = if cfg!(target_os = "windows") {
+    let output = if cfg!(windows) {
         make_call("cmd", ["/C", command]).await?
     } else {
         make_call("sh", ["-c", command]).await?
