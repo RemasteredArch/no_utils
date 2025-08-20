@@ -1,6 +1,6 @@
 [workspace.package]
 authors = ["RemasteredArch"]
-edition = "2021"
+edition = "2024"
 repository = "https://github.com/RemasteredArch/no_utils/"
 license = "AGPL-3.0-or-later"
 
